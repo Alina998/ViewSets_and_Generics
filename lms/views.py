@@ -30,8 +30,8 @@ class LessonList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         if self.request.user.groups.filter(name="Moderators").exists():
-            return Course.objects.all()
-        return Course.objects.filter(user=self.request.user)
+            return Lesson.objects.all()
+        return Lesson.objects.filter(user=self.request.user)
 
     @api_view(["POST"])
     @permission_classes([IsAuthenticated])
