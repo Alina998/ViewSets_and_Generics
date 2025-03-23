@@ -1,12 +1,68 @@
 from rest_framework import serializers
 from users.models import Payment
-from lms.models import Course, Lesson  # Импортируем Course и Lesson для сериализации
+from lms.models import Course, Lesson
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework import serializers
+from users.models import User
+
 
 class PaymentSerializer(serializers.ModelSerializer):
-    user_email = serializers.EmailField(source='user.email', read_only=True)  # Добавляем поле email пользователя
-    paid_course_name = serializers.CharField(source='paid_course.name', read_only=True)  # Название оплаченного курса
-    paid_lesson_name = serializers.CharField(source='paid_lesson.name', read_only=True)  # Название оплаченного урока
+    user_email = serializers.EmailField(
+        source="user.email", read_only=True
+    )  # Добавляем поле email пользователя
+    paid_course_name = serializers.CharField(
+        source="paid_course.name", read_only=True
+    )  # Название оплаченного курса
+    paid_lesson_name = serializers.CharField(
+        source="paid_lesson.name", read_only=True
+    )  # Название оплаченного урока
 
     class Meta:
         model = Payment
-        fields = ['id', 'user_email', 'payment_date', 'paid_course_name', 'paid_lesson_name', 'amount', 'payment_method']
+        fields = [
+            "id",
+            "user_email",
+            "payment_date",
+            "paid_course_name",
+            "paid_lesson_name",
+            "amount",
+            "payment_method",
+        ]
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Добавление пользовательских полей в токен
+        token["username"] = user.username
+        token["email"] = user.email
+
+        return token
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "email",
+            "phone_number",
+            "user_country",
+            "user_photo",
+            "password",
+        ]
+        extra_kwargs = {"password": {"write_only": True}}
+
+    def create(self, validated_data):
+        user = User(**validated_data)
+        user.set_password(validated_data["password"])
+        user.save()
+        return user
+
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["phone_number", "user_country", "user_photo"]
