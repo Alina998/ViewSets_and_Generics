@@ -4,8 +4,9 @@ from lms.models import Course, Lesson
 
 
 class User(AbstractUser):
-    username = None
-
+    username = models.CharField(
+        max_length=100, unique=True, blank=True, null=True, verbose_name="Имя пользователя"
+    )
     email = models.EmailField(unique=True, verbose_name="Почта")
     phone_number = models.CharField(
         max_length=35, blank=True, null=True, verbose_name="Номер телефона"
@@ -63,3 +64,16 @@ class Payment(models.Model):
     class Meta:
         verbose_name = "Платеж"
         verbose_name_plural = "Платежи"
+
+class Subscription(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name="Курс")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата подписки")
+
+    class Meta:
+        unique_together = ('user', 'course')  # Уникальная пара пользователь-курс
+        verbose_name = "Подписка"
+        verbose_name_plural = "Подписки"
+
+    def __str__(self):
+        return f"{self.user.email} подписан на {self.course.name}"
