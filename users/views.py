@@ -4,6 +4,13 @@ from django_filters import rest_framework as filters
 from users.serializers import PaymentSerializer, UserSerializer, UserUpdateSerializer, SubscriptionSerializer, MyTokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from lms.paginators import CustomPageNumberPagination
+import stripe
+from django.conf import settings
+from django.views import View
+from django.http import JsonResponse
+from django.shortcuts import render
+
+stripe.api_key = settings.STRIPE_TEST_SECRET_KEY
 
 
 class PaymentFilter(filters.FilterSet):
@@ -72,3 +79,46 @@ class SubscriptionDeleteView(generics.DestroyAPIView):
     def get_object(self):
         # Получаем объект подписки по текущему пользователю и курсу
         return Subscription.objects.get(user=self.request.user, course=self.kwargs['course_id'])
+
+
+stripe.api_key = settings.STRIPE_TEST_SECRET_KEY
+
+class CreateProductView(View):
+    def post(self, request):
+        try:
+            product = stripe.Product.create(
+                name=request.POST.get('name'),
+                description=request.POST.get('description'),
+            )
+            return JsonResponse({'product_id': product.id})
+        except Exception as e:
+            return JsonResponse({'error': str(e)})
+
+class CreatePriceView(View):
+    def post(self, request):
+        try:
+            price = stripe.Price.create(
+                unit_amount=int(request.POST.get('amount')),  # сумма
+                currency='usd',
+                product=request.POST.get('product_id'),
+            )
+            return JsonResponse({'price_id': price.id})
+        except Exception as e:
+            return JsonResponse({'error': str(e)})
+
+class CreateCheckoutSessionView(View):
+    def post(self, request):
+        try:
+            session = stripe.checkout.Session.create(
+                payment_method_types=['card'],
+                line_items=[{
+                    'price': request.POST.get('price_id'),
+                    'quantity': 1,
+                }],
+                mode='payment',
+                success_url='https://your-domain.com/success',
+                cancel_url='https://your-domain.com/cancel',
+            )
+            return JsonResponse({'session_id': session.id})
+        except Exception as e:
+            return JsonResponse({'error': str(e)})

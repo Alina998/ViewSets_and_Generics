@@ -17,6 +17,11 @@ class CourseViewSet(ModelViewSet):
             return Course.objects.all()
         return Course.objects.filter(user=self.request.user)
 
+    def get_serializer_context(self):  # Добавляем метод для передачи контекста
+        context = super().get_serializer_context()
+        context['request'] = self.request  # Передаем текущий запрос
+        return context
+
     @api_view(["POST"])
     @permission_classes([IsAuthenticated])
     def perform_create(self, request):

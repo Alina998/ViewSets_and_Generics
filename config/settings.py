@@ -29,6 +29,8 @@ INSTALLED_APPS = [
     "lms",
     "rest_framework_simplejwt",
     "django_filters",
+    'drf_yasg',
+    'coreapi',
 ]
 
 MIDDLEWARE = [
@@ -125,3 +127,8 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
+
+# settings.py
+
+STRIPE_TEST_PUBLIC_KEY = os.getenv("STRIPE_TEST_PUBLIC_KEY")
+STRIPE_TEST_SECRET_KEY = os.getenv("STRIPE_TEST_SECRET_KEY")
