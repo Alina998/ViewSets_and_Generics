@@ -69,6 +69,7 @@ class Subscription(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name="Курс")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата подписки")
+    is_subscribe = models.BooleanField(default=False, verbose_name="Подписка")
 
     class Meta:
         unique_together = ('user', 'course')  # Уникальная пара пользователь-курс
