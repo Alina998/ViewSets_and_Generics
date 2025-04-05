@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 
 class Course(models.Model):
@@ -11,10 +12,12 @@ class Course(models.Model):
         help_text="Загрузите изображение",
     )
     description = models.CharField(max_length=500, verbose_name="Описание курса")
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Владелец', blank=True, null=True)
 
     class Meta:
         verbose_name = "Курс"
         verbose_name_plural = "Курсы"
+        ordering = ('name',)
 
 
 class Lesson(models.Model):
@@ -34,6 +37,8 @@ class Lesson(models.Model):
         verbose_name="Курс",
         help_text="Выберите курс",
     )
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Владелец', blank=True,
+                              null=True)
 
     class Meta:
         verbose_name = "Урок"
