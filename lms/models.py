@@ -3,6 +3,7 @@ from django.conf import settings
 
 
 class Course(models.Model):
+    """Модель курса"""
     name = models.CharField(max_length=100, verbose_name="Название курса")
     preview = models.ImageField(
         upload_to="courses/preview",
@@ -21,6 +22,7 @@ class Course(models.Model):
 
 
 class Lesson(models.Model):
+    """Модель урока"""
     name = models.CharField(max_length=100, verbose_name="Название урока")
     description = models.CharField(max_length=500, verbose_name="Описание урока")
     preview = models.ImageField(

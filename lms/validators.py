@@ -2,6 +2,7 @@ from rest_framework.serializers import ValidationError
 
 
 class VideoLinkValidator:
+    """Проверяем что видео выложено на youtube.com"""
     def __init__(self, field):
         self.field = field
 

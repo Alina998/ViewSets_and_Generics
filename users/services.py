@@ -3,6 +3,7 @@ from django.contrib.auth.models import Group, Permission
 
 
 def create_moderator_group(sender, **kwargs):
+    '''Функция для создания группы модераторов'''
     group, created = Group.objects.get_or_create(name="Moderators")
     permissions = [
         "lms.view_course",

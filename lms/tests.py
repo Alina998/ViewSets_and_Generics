@@ -35,7 +35,7 @@ class LmsTestCase(APITestCase):
         )
 
     def test_list_lesson(self):
-
+        '''Тест для получения списка уроков'''
         self.lesson = Lesson.objects.create(
             name='list test lesson',
             description='list lesson description',
@@ -57,6 +57,7 @@ class LmsTestCase(APITestCase):
             response.json().get('results')[0].get('name'))
 
     def test_retrieve_lesson(self):
+        '''Тест для просмотра урока'''
         response = self.client.get(f'/lessons/{self.lesson.pk}/')
 
         # response = self.client.get(f'/lessons/{self.lesson.pk}/')
@@ -76,6 +77,7 @@ class LmsTestCase(APITestCase):
         self.assertEqual(response.get('owner'), self.user.pk)
 
     def test_create_lesson(self):
+        '''Тест для создания урока'''
         data = {
             'name': 'test lesson 2',
             'description': 'description 2',
@@ -103,7 +105,7 @@ class LmsTestCase(APITestCase):
         )
 
     def test_update_lesson(self):
-
+        '''Тест для обновления урока'''
         data = {
             'name': 'updated lesson',
             'description': 'updated description',
@@ -126,7 +128,7 @@ class LmsTestCase(APITestCase):
         self.assertEqual(response.get('owner'), self.user.pk)
 
     def test_delete_lesson(self):
-
+        '''Тест для удаления урока'''
         response = self.client.delete(
             f'/lessons/delete/{self.lesson.pk}/',
         )

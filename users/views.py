@@ -14,6 +14,7 @@ stripe.api_key = settings.STRIPE_TEST_SECRET_KEY
 
 
 class PaymentFilter(filters.FilterSet):
+    '''Представление для фильтрации платежей'''
     class Meta:
         model = Payment
         fields = {
@@ -25,6 +26,7 @@ class PaymentFilter(filters.FilterSet):
 
 
 class PaymentList(generics.ListAPIView):
+    '''Представление для просмотра списка платежей'''
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
     filter_backends = (filters.DjangoFilterBackend,)
@@ -33,12 +35,14 @@ class PaymentList(generics.ListAPIView):
 
 
 class UserRegistrationView(generics.CreateAPIView):
+    '''Представление для регистрации пользователя'''
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.AllowAny]  # Доступно для всех
 
 
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
+    '''Представление для просмотра пользователя'''
     queryset = User.objects.all()
     serializer_class = UserUpdateSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -49,10 +53,12 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
+    '''Представление для получения токена'''
     serializer_class = MyTokenObtainPairSerializer
 
 
 class SubscriptionCreateView(generics.CreateAPIView):
+    '''Представление для создания подписки'''
     queryset = Subscription.objects.all()
     serializer_class = SubscriptionSerializer
     permission_classes = [permissions.IsAuthenticated]  # Только авторизованные пользователи могут подписываться
@@ -62,6 +68,7 @@ class SubscriptionCreateView(generics.CreateAPIView):
 
 
 class SubscriptionListView(generics.ListAPIView):
+    '''Представление для просмотра списка подписок'''
     serializer_class = SubscriptionSerializer
     permission_classes = [permissions.IsAuthenticated]  # Только авторизованные пользователи могут просматривать свои подписки
     pagination_class = CustomPageNumberPagination
@@ -73,6 +80,7 @@ class SubscriptionListView(generics.ListAPIView):
 
 
 class SubscriptionDeleteView(generics.DestroyAPIView):
+    '''Представление для удаления подписки'''
     queryset = Subscription.objects.all()
     permission_classes = [permissions.IsAuthenticated]
 
@@ -84,6 +92,7 @@ class SubscriptionDeleteView(generics.DestroyAPIView):
 stripe.api_key = settings.STRIPE_TEST_SECRET_KEY
 
 class CreateProductView(View):
+    '''Представление для создания продукта для оплаты курсов'''
     def post(self, request):
         try:
             product = stripe.Product.create(
@@ -95,6 +104,7 @@ class CreateProductView(View):
             return JsonResponse({'error': str(e)})
 
 class CreatePriceView(View):
+    '''Представление для создания цены для оплаты курсов'''
     def post(self, request):
         try:
             price = stripe.Price.create(
@@ -107,6 +117,7 @@ class CreatePriceView(View):
             return JsonResponse({'error': str(e)})
 
 class CreateCheckoutSessionView(View):
+    '''Представление для создания сессии для получения ссылки на оплату'''
     def post(self, request):
         try:
             session = stripe.checkout.Session.create(

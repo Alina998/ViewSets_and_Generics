@@ -9,6 +9,7 @@ from lms.paginators import CustomPageNumberPagination
 
 
 class CourseViewSet(ModelViewSet):
+    '''Вьюсет для курса'''
     serializer_class = CourseSerializer
     pagination_class = CustomPageNumberPagination
 
@@ -33,6 +34,7 @@ class CourseViewSet(ModelViewSet):
 
 
 class LessonList(generics.ListCreateAPIView):
+    '''Представление для списка уроков'''
     serializer_class = LessonSerializer
     pagination_class = CustomPageNumberPagination
 
@@ -52,20 +54,24 @@ class LessonList(generics.ListCreateAPIView):
 
 
 class LessonRetrieve(generics.RetrieveAPIView):
+    '''Представление для просмотра урока'''
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
 
 
 class LessonCreate(generics.CreateAPIView):
+    '''Представление для создания урока'''
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
 
 
 class LessonUpdate(generics.UpdateAPIView):
+    '''Представление для обновления урока'''
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
 
 
 class LessonDestroy(generics.DestroyAPIView):
+    '''Представление для удаления урока'''
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer

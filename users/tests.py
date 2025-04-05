@@ -7,6 +7,7 @@ from lms.models import Course, Lesson
 
 
 class UserTestCase(APITestCase):
+    '''Тестирование модели пользователя'''
     def setUp(self):
         self.user = User.objects.create_user(
             email='testuser@example.com',
@@ -17,6 +18,7 @@ class UserTestCase(APITestCase):
         self.lesson = Lesson.objects.create(name='Test Lesson', course=self.course)
 
     def test_create_user(self):
+        '''Тест для создания пользователя'''
         url = reverse('user-register')
         data = {
             'email': 'newuser@example.com',
@@ -28,6 +30,7 @@ class UserTestCase(APITestCase):
         self.assertEqual(User.objects.count(), 2)  # Один существующий + один новый
 
     def test_get_user(self):
+        '''Тест для просмотра данных пользователя'''
         url = reverse('user-detail', args=[self.user.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -79,6 +82,7 @@ class SubscriptionTestCase(APITestCase):
         self.assertEqual(Subscription.objects.all().count(), 2)
 
     def test_list_subscription(self):
+        '''Тест для просмотра подписки'''
         subscription_url = reverse('subscriptions')
         print(subscription_url)
         response = self.client.get(subscription_url)
@@ -88,6 +92,7 @@ class SubscriptionTestCase(APITestCase):
 
 
 class PaymentTests(APITestCase):
+    '''Тест модели платежей'''
     def setUp(self):
         self.user = User.objects.create_user(
             email='testuser@example.com',
@@ -98,6 +103,7 @@ class PaymentTests(APITestCase):
         self.lesson = Lesson.objects.create(name='Test Lesson', course=self.course)
 
     def test_create_payment(self):
+        '''Тест для создания платежа'''
         url = reverse('payment-list')
         data = {
             'user': self.user.id,
@@ -109,6 +115,7 @@ class PaymentTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_get_payment(self):
+        '''Тест для просмотра данных платежа'''
         payment = Payment.objects.create(
             user=self.user,
             paid_course=self.course,

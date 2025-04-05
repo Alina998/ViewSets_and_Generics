@@ -5,6 +5,7 @@ from users.models import User, Payment, Subscription
 
 
 class PaymentSerializer(serializers.ModelSerializer):
+    '''Сериализатор для платежей'''
     user_email = serializers.EmailField(
         source="user.email", read_only=True
     )  # Добавляем поле email пользователя
@@ -29,6 +30,7 @@ class PaymentSerializer(serializers.ModelSerializer):
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    '''Сериализатор для получения токена'''
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
@@ -41,6 +43,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    '''Сериализатор для пользователя'''
     class Meta:
         model = User
         fields = [
@@ -61,12 +64,14 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):
+    '''Сериализатор для обновления данных пользователя'''
     class Meta:
         model = User
         fields = ["phone_number", "user_country", "user_photo"]
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):
+    '''Сериализатор для подписки'''
     class Meta:
         model = Subscription
         fields = ['user', 'course']

@@ -4,6 +4,7 @@ from lms.models import Course, Lesson
 
 
 class User(AbstractUser):
+    '''Модель пользователя'''
     username = models.CharField(
         max_length=100, unique=True, blank=True, null=True, verbose_name="Имя пользователя"
     )
@@ -31,6 +32,7 @@ class User(AbstractUser):
 
 
 class Payment(models.Model):
+    '''Модель платежа'''
     PAYMENT_METHOD_CHOICES = [
         ("cash", "Наличные"),
         ("transfer", "Перевод на счет"),
@@ -66,6 +68,7 @@ class Payment(models.Model):
         verbose_name_plural = "Платежи"
 
 class Subscription(models.Model):
+    '''Модель подписки'''
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name="Курс")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата подписки")
