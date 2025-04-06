@@ -4,6 +4,7 @@ from django.conf import settings
 
 class Course(models.Model):
     """Модель курса"""
+
     name = models.CharField(max_length=100, verbose_name="Название курса")
     preview = models.ImageField(
         upload_to="courses/preview",
@@ -13,16 +14,23 @@ class Course(models.Model):
         help_text="Загрузите изображение",
     )
     description = models.CharField(max_length=500, verbose_name="Описание курса")
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Владелец', blank=True, null=True)
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name="Владелец",
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         verbose_name = "Курс"
         verbose_name_plural = "Курсы"
-        ordering = ('name',)
+        ordering = ("name",)
 
 
 class Lesson(models.Model):
     """Модель урока"""
+
     name = models.CharField(max_length=100, verbose_name="Название урока")
     description = models.CharField(max_length=500, verbose_name="Описание урока")
     preview = models.ImageField(
@@ -39,8 +47,13 @@ class Lesson(models.Model):
         verbose_name="Курс",
         help_text="Выберите курс",
     )
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Владелец', blank=True,
-                              null=True)
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name="Владелец",
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         verbose_name = "Урок"

@@ -9,7 +9,8 @@ from lms.paginators import CustomPageNumberPagination
 
 
 class CourseViewSet(ModelViewSet):
-    '''Вьюсет для курса'''
+    """Вьюсет для курса"""
+
     serializer_class = CourseSerializer
     pagination_class = CustomPageNumberPagination
 
@@ -20,7 +21,7 @@ class CourseViewSet(ModelViewSet):
 
     def get_serializer_context(self):  # Добавляем метод для передачи контекста
         context = super().get_serializer_context()
-        context['request'] = self.request  # Передаем текущий запрос
+        context["request"] = self.request  # Передаем текущий запрос
         return context
 
     @api_view(["POST"])
@@ -34,7 +35,8 @@ class CourseViewSet(ModelViewSet):
 
 
 class LessonList(generics.ListCreateAPIView):
-    '''Представление для списка уроков'''
+    """Представление для списка уроков"""
+
     serializer_class = LessonSerializer
     pagination_class = CustomPageNumberPagination
 
@@ -54,24 +56,28 @@ class LessonList(generics.ListCreateAPIView):
 
 
 class LessonRetrieve(generics.RetrieveAPIView):
-    '''Представление для просмотра урока'''
+    """Представление для просмотра урока"""
+
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
 
 
 class LessonCreate(generics.CreateAPIView):
-    '''Представление для создания урока'''
+    """Представление для создания урока"""
+
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
 
 
 class LessonUpdate(generics.UpdateAPIView):
-    '''Представление для обновления урока'''
+    """Представление для обновления урока"""
+
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
 
 
 class LessonDestroy(generics.DestroyAPIView):
-    '''Представление для удаления урока'''
+    """Представление для удаления урока"""
+
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
