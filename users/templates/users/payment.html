@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Создание продукта </title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <h1>Создание продукта</h1>
+    <form id="product-form">
+        <input type="text" name="name" placeholder="Имя продукта" required>
+        <textarea name="description" placeholder="Описание продукта" required></textarea>
+        <button type="submit">Создать продукт</button>
+    </form>
+
+    <h1>Создание цены</h1>
+    <form id="price-form">
+        <input type="text" name="amount" placeholder="Сумма в центах" required>
+        <input type="text" name="product_id" placeholder="ID продукта" required>
+        <button type="submit">Создать цену</button>
+    </form>
+
+    <h1>Создание сессии оплаты</h1>
+    <form id="checkout-form">
+        <input type="text" name="price_id" placeholder="ID цены" required>
+        <button type="submit">Создать сессию</button>
+    </form>
+
+    <script>
+        document.getElementById('product-form').onsubmit = async function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const response = await fetch('/create-product/', {
+                method: 'POST',
+                body: formData,
+            });
+            const result = await response.json();
+            console.log(result);
+        };
+
+        document.getElementById('price-form').onsubmit = async function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const response = await fetch('/
