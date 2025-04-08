@@ -22,7 +22,7 @@ schema_view = get_schema_view(
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("lms.urls")),
-    path("users/", include("users.urls")),
+    path("users/", include("users.urls", namespace="users")),
     # path('', include('docs.urls')),
     path(
         "swagger/",

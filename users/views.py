@@ -54,7 +54,7 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
     """Представление для просмотра пользователя"""
 
     queryset = User.objects.all()
-    serializer_class = UserUpdateSerializer
+    serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):

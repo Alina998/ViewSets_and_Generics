@@ -12,6 +12,9 @@ from users.views import (
     CreateCheckoutSessionView,
 )
 
+app_name = "users"
+
+
 urlpatterns = [
     path("payments/", PaymentList.as_view(), name="payment-list"),
     path("create-product/", CreateProductView.as_view(), name="create_product"),

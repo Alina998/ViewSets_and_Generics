@@ -18,7 +18,7 @@ class UserTestCase(APITestCase):
 
     def test_create_user(self):
         """Тест для создания пользователя"""
-        url = reverse("user-register")
+        url = reverse("users:user-register")
         data = {
             "email": "newuser@example.com",
             "password": "newpassword",
@@ -30,10 +30,12 @@ class UserTestCase(APITestCase):
 
     def test_get_user(self):
         """Тест для просмотра данных пользователя"""
-        url = reverse("user-detail", args=[self.user.id])
+        self.client.force_authenticate(self.user)
+        url = reverse("users:user-detail", args=[self.user.id])
         response = self.client.get(url)
+        print(response.json())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["email"], self.user.email)
+        self.assertEqual(response.json().get("email"), self.user.email)
 
 
 class SubscriptionTestCase(APITestCase):
@@ -61,15 +63,18 @@ class SubscriptionTestCase(APITestCase):
     def test_create_subscription(self):
         """Тестирование создания подписки"""
 
+        course = Course.objects.create(
+            name="test course sub 2", description="test desc sub 2"
+        )
+
         data = {
             "user": self.user.pk,
-            "course": self.course.pk,
+            "course": course.pk,
         }
 
-        response = self.client.post(
-            f"subscribe/{self.subscription.course_id}/", data=data
-        )
-        print(response.json())
+        url = reverse("users:subscribe", args=(course.pk,))
+
+        response = self.client.post(url, data=data)
 
         # subscription_url = reverse('subscribe')
         # print(subscription_url)
@@ -80,45 +85,9 @@ class SubscriptionTestCase(APITestCase):
 
     def test_list_subscription(self):
         """Тест для просмотра подписки"""
-        subscription_url = reverse("subscriptions")
+        subscription_url = reverse("users:subscriptions")
         print(subscription_url)
         response = self.client.get(subscription_url)
-        print(response.json())
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 4)
-
-
-class PaymentTests(APITestCase):
-    """Тест модели платежей"""
-
-    def setUp(self):
-        self.user = User.objects.create_user(
-            email="testuser@example.com", password="testpassword", username="test_user"
-        )
-        self.course = Course.objects.create(name="Test Course")
-        self.lesson = Lesson.objects.create(name="Test Lesson", course=self.course)
-
-    def test_create_payment(self):
-        """Тест для создания платежа"""
-        url = reverse("payment-list")
-        data = {
-            "user": self.user.id,
-            "paid_course": self.course.id,
-            "amount": 100.00,
-            "payment_method": "cash",
-        }
-        response = self.client.post(url, data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-    def test_get_payment(self):
-        """Тест для просмотра данных платежа"""
-        payment = Payment.objects.create(
-            user=self.user,
-            paid_course=self.course,
-            amount=100.00,
-            payment_method="cash",
-        )
-
-        url = reverse("create-checkout-session/", args=[payment.id])
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)

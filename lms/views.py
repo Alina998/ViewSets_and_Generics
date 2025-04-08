@@ -17,7 +17,7 @@ class CourseViewSet(ModelViewSet):
     def get_queryset(self):
         if self.request.user.groups.filter(name="Moderators").exists():
             return Course.objects.all()
-        return Course.objects.filter(user=self.request.user)
+        return Course.objects.filter(owner=self.request.user)
 
     def get_serializer_context(self):  # Добавляем метод для передачи контекста
         context = super().get_serializer_context()
@@ -29,7 +29,7 @@ class CourseViewSet(ModelViewSet):
     def perform_create(self, request):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(user=request.user)
+            serializer.save(owner=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -43,14 +43,14 @@ class LessonList(generics.ListCreateAPIView):
     def get_queryset(self):
         if self.request.user.groups.filter(name="Moderators").exists():
             return Lesson.objects.all()
-        return Lesson.objects.filter(user=self.request.user)
+        return Lesson.objects.filter(owner=self.request.user)
 
     @api_view(["POST"])
     @permission_classes([IsAuthenticated])
     def perform_create(self, request):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(user=request.user)
+            serializer.save(owner=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

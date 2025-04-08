@@ -14,13 +14,13 @@ class LmsTestCase(APITestCase):
         self.user = User.objects.create(
             email="test@mail.ru",
         )
-        self.user.set_password("test_pass_1")
-        self.user.save()
-        self.client.force_authenticate(user=self.user)
+        # self.user.set_password("test_pass_1")
+        # self.user.save()
+        # self.client.force_authenticate(user=self.user)
 
         """Создается тестовый курс"""
         self.course = Course.objects.create(
-            name="test course", description="test course description"
+            name="test course", description="test course description", owner=self.user
         )
 
         """Создается тестовый урок"""
@@ -32,16 +32,13 @@ class LmsTestCase(APITestCase):
             owner=self.user,
         )
 
+        self.client.force_authenticate(user=self.user)
+
     def test_list_lesson(self):
         """Тест для получения списка уроков"""
-        self.lesson = Lesson.objects.create(
-            name="list test lesson",
-            description="list lesson description",
-            course=self.course,
-            owner=self.user,
-        )
 
-        response = self.client.get("/lessons/")
+        url = reverse("lms:lesson-list")
+        response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -54,10 +51,11 @@ class LmsTestCase(APITestCase):
 
     def test_retrieve_lesson(self):
         """Тест для просмотра урока"""
-        response = self.client.get(f"/lessons/{self.lesson.pk}/")
+        # response = self.client.get(f"/lessons/{self.lesson.pk}/")
+        url = reverse("lms:lesson-detail", args=(self.lesson.pk,))
+        response = self.client.get(url)
 
-        # response = self.client.get(f'/lessons/{self.lesson.pk}/')
-        # print(response.json())
+        print(response.json())
 
         self.assertEqual(
             response.status_code,
@@ -101,12 +99,12 @@ class LmsTestCase(APITestCase):
         data = {
             "name": "updated lesson",
             "description": "updated description",
+            "video_link": "https://www.youtube.com/",
+            "course": self.course.pk,
         }
 
-        response = self.client.put(
-            f"/lessons/update/{self.lesson.pk}/",
-            data=data,
-        )
+        url = reverse("lms:lesson-update", args=(self.lesson.pk,))
+        response = self.client.put(url, data=data)
 
         print(response.json())
 
@@ -123,9 +121,8 @@ class LmsTestCase(APITestCase):
 
     def test_delete_lesson(self):
         """Тест для удаления урока"""
-        response = self.client.delete(
-            f"/lessons/delete/{self.lesson.pk}/",
-        )
+        lesson_delete_url = reverse("lms:lesson-delete", args=(self.lesson.pk,))
+        response = self.client.delete(lesson_delete_url)
 
         self.assertEqual(
             response.status_code,
@@ -134,3 +131,8 @@ class LmsTestCase(APITestCase):
         self.assertFalse(
             Lesson.objects.all().exists(),
         )
+
+    def test_course_retrieve(self):
+        url = reverse("lms:course-detail", args=(self.course.pk,))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
